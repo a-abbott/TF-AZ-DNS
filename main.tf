@@ -1,7 +1,7 @@
-#Creator : Alexander Abbott
-#Source  : https://github.com/a-abbott/TF-AZ-DNS
+# Creator : Alexander Abbott
+# Source  : https://github.com/a-abbott/TF-AZ-DNS
 
-#Set TF Versions and providers
+# Set TF Versions and providers
     terraform {
         required_version = var.tf_required_version
         backend "azurerm" {
@@ -14,16 +14,16 @@
         }
     }
 
-#Hold Azure RM data for TF
+# Hold Azure RM data for TF
     data "azurerm_client_config" "current" {}
 
-#Configure the Microsoft Azure Provider and subscription
+# Configure the Microsoft Azure Provider and subscription
     provider "azurerm" {
         features {}
         subscription_id = var.azure_subscription_id
     }
 
-#Configure Tags
+# Configure Tags
     locals {
         static_tags = {
             CreatedDate  = timestamp()
@@ -33,7 +33,7 @@
         extra_tags  = var.extra_tags
     }
 
-#Create Resouce Group
+# Create Resouce Group
     resource "azurerm_resource_group" "RG" {
         name     = "${var.deployment_name}_rg"
         location = var.location
@@ -45,8 +45,7 @@
         tags = merge(local.static_tags,var.common_tags, var.extra_tags)
     }
 
-#Create AZ DNS
-
+# Create AZ DNS Zone
     resource "azurerm_dns_zone" "AZ_DNS_Zone" {
         count = var.enable_private_dns ? 1 : 0
         name                = var.domain
@@ -64,6 +63,16 @@
                 serial_number = custom_soa.value["serial_number"]
                 tags = custom_soa.value["tags"]
                 ttl = custom_soa.value["ttl"]
+            }
+        }
+        resource "timeouts" {
+            count = var.enable_custom_tiemouts ? 1 : 0
+            for_each = var.timeouts
+            content {
+                create = timeouts.value["create"]
+                delete = timeouts.value["delete"]
+                read = timeouts.value["read"]
+                update = timeouts.value["update"]
             }
         }
         lifecycle {
@@ -92,6 +101,16 @@
                 ttl = custom_soa.value["ttl"]
             }
         }
+        resource "timeouts" {
+            count = var.enable_custom_tiemouts ? 1 : 0
+            for_each = var.timeouts
+            content {
+                create = timeouts.value["create"]
+                delete = timeouts.value["delete"]
+                read = timeouts.value["read"]
+                update = timeouts.value["update"]
+            }
+        }
         lifecycle {
         ignore_changes = [
             tags["CreatedDate"]
@@ -100,3 +119,60 @@
         tags = merge(local.static_tags,var.common_tags, var.extra_tags)
     }
     
+# Create AZ DNS Records
+    # Create A Records
+        resource "azurerm_dns_a_record" "a_record" {
+            count = var.enable_a_record_creation ? 0 : 1
+            zone_name           = var.domain
+            resource_group_name = "${var.deployment_name}_rg"
+            name                = var.a_records[count.index].name
+            records             = var.a_records[count.index].records
+            ttl                 = var.a_records[count.index].ttl
+        }
+    # Create AAAA Records
+        resource "azurerm_dns_aaaa_record" "aaaa_record" {
+            count = var.enable_aaaa_record_creation ? 0 : 1
+            zone_name           = var.domain
+            resource_group_name = "${var.deployment_name}_rg"
+            name                = var.aaaa_records[count.index].name
+            records             = var.aaaa_records[count.index].records
+            ttl                 = var.aaaa_records[count.index].ttl
+        }
+    # Create CAA Records
+        resource "azurerm_dns_caa_record" "caa_record" {
+            count = var.enable_caa_record_creation ? 0 : 1
+            zone_name           = var.domain
+            resource_group_name = "${var.deployment_name}_rg"
+            record {
+                flags           = var.caa_records[count.index].flags
+                tag             = var.caa_records[count.index].tag
+                value           = var.caa_records[count.index].value
+            }
+        }
+    # Create CNAME Records
+        resource "azurerm_dns_cname_record" "cname_record" {
+            count = var.enable_cname_record_creation ? 0 : 1
+            zone_name           = var.domain
+            resource_group_name = "${var.deployment_name}_rg"
+            name                = var.cname_records[count.index].name
+            records             = var.cname_records[count.index].record
+            ttl                 = var.cname_records[count.index].ttl
+        }
+    # Create MX Records
+        resource "azurerm_dns_mx_record" "mx_record" {
+            count = var.enable_mx_record_creation ? 0 : 1
+            zone_name           = var.domain
+            resource_group_name = "${var.deployment_name}_rg"
+            record {
+                preference      = var.mx_records[count.index].preference
+                exchange        = var.mx_records[count.index].exchange
+            }
+        }
+    # Create NS Records
+
+    # Create PTR Records
+
+    # Create SRV Records
+
+    # Create TXT Records
+
