@@ -53,17 +53,17 @@
         resource_group_name = "${var.deployment_name}_rg"
         resource "soa_record" {
             count = var.enable_custom_soa ? 1 : 0
-            for_each = var.soa_record
+            for_each = var.custom_soa
             content {
-                email = soa_record.value["email"]
-                host_name = soa_record.value["host_name"]
-                expire_time = soa_record.value["expire_time"]
-                minimum_ttl = soa_record.value["minimum_ttl"]
-                refresh_time = soa_record.value["refresh_time"]
-                retry_time = soa_record.value["retry_time"]
-                serial_number = soa_record.value["serial_number"]
-                tags = soa_record.value["tags"]
-                ttl = soa_record.value["ttl"]
+                email = custom_soa.value["email"]
+                host_name = custom_soa.value["host_name"]
+                expire_time = custom_soa.value["expire_time"]
+                minimum_ttl = custom_soa.value["minimum_ttl"]
+                refresh_time = custom_soa.value["refresh_time"]
+                retry_time = custom_soa.value["retry_time"]
+                serial_number = custom_soa.value["serial_number"]
+                tags = custom_soa.value["tags"]
+                ttl = custom_soa.value["ttl"]
             }
         }
         lifecycle {
@@ -80,16 +80,16 @@
         resource_group_name = "${var.deployment_name}_rg"
         resource "soa_record" {
             count = var.enable_custom_soa ? 1 : 0
-            for_each = var.soa_record
+            for_each = var.custom_soa
             content {
-                email = soa_record.value["email"]
-                host_name = soa_record.value["host_name"]
-                expire_time = soa_record.value["expire_time"]
-                minimum_ttl = soa_record.value["minimum_ttl"]
-                refresh_time = soa_record.value["refresh_time"]
-                retry_time = soa_record.value["retry_time"]
-                serial_number = soa_record.value["serial_number"]
-                ttl = soa_record.value["ttl"]
+                email = custom_soa.value["email"]
+                host_name = custom_soa.value["host_name"]
+                expire_time = custom_soa.value["expire_time"]
+                minimum_ttl = custom_soa.value["minimum_ttl"]
+                refresh_time = custom_soa.value["refresh_time"]
+                retry_time = custom_soa.value["retry_time"]
+                serial_number = custom_soa.value["serial_number"]
+                ttl = custom_soa.value["ttl"]
             }
         }
         lifecycle {

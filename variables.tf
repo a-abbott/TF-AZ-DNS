@@ -69,7 +69,7 @@
     }
 
     # If "enable_custom_soa" set to true, complete the following variables
-        variable "soa_record" {
+        variable "custom_soa" {
             # Required : email, host_name
             # Optional : expire_time, fqdn, minimum_ttl, refresh_time, retry_time, serial_number, ttl
             type = set(object(
