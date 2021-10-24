@@ -58,34 +58,7 @@ pool:
   vmImage: $(var_vm_image)
 
 stages:
-  # Run Checkov, publish results back to Devops
-  #############################################
-
-  - stage: "runCheckov"
-    displayName: "Checkov - Scan Terraform files"
-    jobs:
-      - job: "runCheckov"
-        displayName: "Checkov > Pull, run and publish results of Checkov scan"
-        steps:
-          - bash: |
-              docker pull bridgecrew/checkov
-            workingDirectory: $(System.DefaultWorkingDirectory)
-            displayName: "Pull > bridgecrew/checkov"
-
-          - bash: |
-              docker run --volume $(pwd):/tf bridgecrew/checkov --directory /tf --output junitxml --soft-fail > $(pwd)/CheckovReport.xml
-            workingDirectory: $(System.DefaultWorkingDirectory)
-            displayName: "Run > checkov"
-
-          - task: PublishTestResults@2
-            inputs:
-              testRunTitle: "Checkov Results"
-              failTaskOnFailedTests: false
-              testResultsFormat: "JUnit"
-              testResultsFiles: "CheckovReport.xml"
-              searchFolder: "$(System.DefaultWorkingDirectory)"
-            displayName: "Publish > Checkov scan results"
-
+  
   # Validate Terraform - using the following
   # https://marketplace.visualstudio.com/items?itemName=charleszipp.azure-pipelines-tasks-terraform
   #################################################################################################

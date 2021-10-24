@@ -7,5 +7,6 @@ This repository contains code to acheive the following:
 - Deploy Azure DNS into an Azure Subscription using tf
 - Add records into the created Azure DNS
 
-To use this code, clone the content, and replace variable content to match.
-If you need assistance doing so, please check if there are comments on how to replace, or the readme file in the folder.
+To use this code, clone the content, and replace variable content to match your deployment.
+
+Inline comments are above every variable to guide setting up.

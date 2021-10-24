@@ -143,6 +143,7 @@
             count = var.enable_caa_record_creation ? 0 : 1
             zone_name           = var.domain
             resource_group_name = "${var.deployment_name}_rg"
+            ttl                 = var.caa_record_ttl
             record {
                 flags           = var.caa_records[count.index].flags
                 tag             = var.caa_records[count.index].tag
@@ -163,6 +164,8 @@
             count = var.enable_mx_record_creation ? 0 : 1
             zone_name           = var.domain
             resource_group_name = "${var.deployment_name}_rg"
+            name                = var.mx_record_name
+            ttl                 = var.mx_record_ttl
             record {
                 preference      = var.mx_records[count.index].preference
                 exchange        = var.mx_records[count.index].exchange
@@ -170,9 +173,50 @@
         }
     # Create NS Records
 
+        resource "azurerm_dns_ns_record" "ns_record" {
+            count = var.enable_ns_record_creation ? 0 : 1
+            zone_name           = var.domain
+            resource_group_name = "${var.deployment_name}_rg"
+            name                = var.ns_record_name
+            ttl                 = var.ns_record_ttl
+            records             = var.ns_record
+        }
     # Create PTR Records
-
+        resource "azurerm_dns_ptr_record" "example" {
+            count = var.enable_ptr_record_creation ? 0 : 1
+            zone_name           = var.domain
+            resource_group_name = "${var.deployment_name}_rg"
+            name                = var.ptr_record_name
+            ttl                 = var.ptr_record_ttl
+            records             = var.ptr_record
+        }
     # Create SRV Records
-
+        /*
+        resource "azurerm_dns_srv_record" "example" {
+            name                = "test"
+            zone_name           = var.domain
+            resource_group_name = "${var.deployment_name}_rg"
+            ttl                 = 300
+            record {
+                priority = 1
+                weight   = 5
+                port     = 8080
+                target   = "target1.contoso.com"
+            }
+        }
+        */
     # Create TXT Records
-
+        /*
+        resource "azurerm_dns_txt_record" "example" {
+            name                = "test"
+            zone_name           = var.domain
+            resource_group_name = "${var.deployment_name}_rg"
+            ttl                 = 300
+            record {
+                value = "google-site-authenticator"
+            }
+            record {
+                value = "more site information here"
+            }
+        }
+        */

@@ -184,6 +184,11 @@
                 default = false
             }
             # If "enable_caa_record_creation" set to true, complete the following variables
+                variable "caa_record_ttl" {
+                    type = string
+                    # The ttl for the MX record
+                    default = "300" 
+                }
                 variable "caa_records" {
                     type          = list(any)
                     description   = "(Optional) Specifies a list of CAA records to create in the specified DNS zone."
@@ -230,7 +235,17 @@
                 default = false
             }
             # If "enable_MX_record_creation" set to true, complete the following variables
-                variable "MX_records" {
+                variable "mx_record_name" {
+                    type = string
+                    # The name for the MX record
+                    default = "" 
+                }
+                variable "mx_record_ttl" {
+                    type = string
+                    # The ttl for the MX record
+                    default = "300" 
+                }
+                variable "mx_records" {
                     type               = list(any)
                     description        = "(Optional) Specifies a list of MX records to create in the specified DNS zone."
                     # Example of config for MX record creation.
@@ -246,10 +261,51 @@
                     default = []
                 }
         # Create NS Records
-            
-
+            variable "enable_ns_record_creation" {
+                type = bool
+                # If set to true, enable NS records"
+                default = false
+            }
+            # If "enable_ns_record_creation" set to true, complete the following variables
+                variable "ns_record_name" {
+                    type = string
+                    # The name for the NS record
+                    default = "" 
+                }
+                variable "ns_record_ttl" {
+                    type = string
+                    # The ttl for the NS record
+                    default = "300" 
+                }
+                variable "ns_record" {
+                    type = string
+                    # The content for the NS record. For multiple, seperate with comma.
+                    default = ""
+                }
+        # Create PTR Record
+            variable "enable_ptr_record_creation" {
+                type = bool
+                # If set to true, enable PTR records"
+                default = false
+            }
+            # If "enable_ptr_record_creation" set to true, complete the following variables
+                variable "ptr_record_name" {
+                    type = string
+                    # The name for the PTR record
+                    default = "" 
+                }
+                variable "ptr_record_ttl" {
+                    type = string
+                    # The ttl for the PTR record
+                    default = "300" 
+                }
+                variable "ptr_record" {
+                    type = string
+                    # The content for the PTR record. For multiple, seperate with comma.
+                    default = ""
+                }
 # Deployment tags
-#   These are tags to attach to all deployed assets.
+    # These are tags to attach to all deployed assets.
     variable "common_tags" {
         type = object({
             production = string
